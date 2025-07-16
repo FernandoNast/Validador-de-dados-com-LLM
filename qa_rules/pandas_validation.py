@@ -1,5 +1,16 @@
 import pandas as pd
-from datetime import datetime, timedelta
+
+from datetime   import datetime, timedelta
+from bs4        import BeautifulSoup
+
+
+# # Carrega o CSV original exportado da API da Remotive
+# df = pd.read_csv("remotive_jobs_data.csv")
+
+
+# # Salva um novo CSV com a descrição tratada
+# df.to_csv("remotive_jobs_data_tratado.csv", index=False)
+
 
 # Função de validação por linha
 def validar_vaga(row):
@@ -67,5 +78,10 @@ df_top = df_validado[df_validado["pontuacao"] >= 5][
 
 df_top.reset_index(drop=True).head(10)
 
+# Remove HTML da coluna "description"
+df_validado["description"] = df_validado["description"].apply(
+    lambda x: BeautifulSoup(str(x), "html.parser").get_text(separator=" ", strip=True)
+)
+
 # (Opcional) Salvar o resultado
-df_validado.to_csv("remotive_validado.csv", index=False)
+df_validado.to_csv("./ai_checks/dados/remotive_validado.csv", index=False)
