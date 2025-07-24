@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 
 # Carrega seu CSV validado
-df = pd.read_csv("./ai_checks/dados/remotive_validado copy.csv")
+df = pd.read_csv("./data/remotive_validado.csv")
 
 # Função para analisar descrição com LLaMA
 def detectar_erros(texto):
@@ -32,6 +32,6 @@ print(detectar_erros(df["description"].iloc[0]))
 df["erros_textuais"] = df["description"].apply(detectar_erros)
 
 # Salva resultado
-df.to_csv("remotive_erros_detectados.csv", index=False)
+df.to_csv("./data/remotive_erros_detectados.csv", index=False)
 
 print("Análise concluída! Resultados salvos em 'remotive_erros_detectados.csv'")

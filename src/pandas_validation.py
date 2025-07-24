@@ -17,13 +17,13 @@ def validar_vaga(row):
     score = 0
     motivos = []
 
-    # 1. Título claro
+    # 1. Titulo
     if any(term in row["title"].lower() for term in ["data", "scientist", "engineer", "analytics"]):
         score += 1
     else:
-        motivos.append("Título genérico")
+        motivos.append("Titulo generico")
 
-    # 2. Salário informado
+    # 2. Salario
     salario = str(row.get("salary", "")).lower()
     if salario and ("competitive" in salario or any(char.isdigit() for char in salario)):
         score += 1
@@ -36,20 +36,20 @@ def validar_vaga(row):
     else:
         motivos.append("Descrição curta")
 
-    # 4. Link funcional
+    # 4. Link
     if str(row["url"]).startswith("http"):
         score += 1
     else:
         motivos.append("Link inválido")
 
-    # 5. Tags técnicas relevantes
+    # 5. Tags relevantes
     tags_str = str(row["tags"]).lower()
-    if any(kw in tags_str for kw in ["python", "sql", "spark", "ml", "machine learning"]):
+    if any(kw in tags_str for kw in ["python", "sql", "ml", "machine learning"]):
         score += 1
     else:
         motivos.append("Poucas techs relevantes")
 
-    # 6. Publicação recente
+    # 6. Publicacao recente
     try:
         pub_date = pd.to_datetime(row["publication_date"])
         if pub_date >= datetime.now() - timedelta(days=15):
@@ -65,9 +65,10 @@ def validar_vaga(row):
     })
 
 # Carrega o CSV
-df = pd.read_csv("./scraper/data/remotive_jobs_data.csv")
+df = pd.read_csv("./data/remotive_jobs_data.csv")
 
-# Aplica validação
+
+# Validacao
 df_validado = df.copy()
 df_validado[["pontuacao", "motivos"]] = df_validado.apply(validar_vaga, axis=1)
 
@@ -76,7 +77,7 @@ df_top = df_validado[df_validado["pontuacao"] >= 5][
     ["title", "company_name", "salary", "pontuacao", "url"]
 ].sort_values(by="pontuacao", ascending=False)
 
-df_top.reset_index(drop=True).head(10)
+print(df_top.reset_index(drop=True).head(10))
 
 # Remove HTML da coluna "description"
 df_validado["description"] = df_validado["description"].apply(
@@ -84,4 +85,4 @@ df_validado["description"] = df_validado["description"].apply(
 )
 
 # (Opcional) Salvar o resultado
-df_validado.to_csv("./ai_checks/dados/remotive_validado.csv", index=False)
+df_validado.to_csv("./data/remotive_validado.csv", index=False)
