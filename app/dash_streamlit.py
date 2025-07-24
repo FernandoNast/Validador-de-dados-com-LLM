@@ -7,7 +7,7 @@ st.title("Validador Inteligente de Vagas")
 
 # Filtros
 categoria = st.selectbox("Categoria", options=["Todas"] + sorted(df["category"].unique().tolist()))
-min_score = st.slider("Score mínimo de qualidade", 0, 100, 70)
+min_score = st.slider("Score mínimo de qualidade", 0, 6, 1)
 
 # Aplicar filtros
 df_filtrado = df.copy()
