@@ -1,5 +1,6 @@
 import pandas as pd
 import requests
+import time
 
 # Carrega seu CSV validado
 df = pd.read_csv("./data/remotive_validado.csv")
@@ -27,11 +28,17 @@ def detectar_erros(texto):
     # print("Resposta da API:", response.json())  # debug
     return response.json().get("response", "").strip()
 
-print(detectar_erros(df["description"].iloc[0]))
+# print(detectar_erros(df["description"].iloc[0]))
 # Aplica ao primeiro exemplo do dataset (ou pode iterar)
+
+inicio = time.time()
+
 df["erros_textuais"] = df["description"].apply(detectar_erros)
 
 # Salva resultado
 df.to_csv("./data/remotive_erros_detectados.csv", index=False)
 
 print("Análise concluída! Resultados salvos em 'remotive_erros_detectados.csv'")
+fim = time.time()
+tempo_exec = fim - inicio
+print(f"\nExecução levou {tempo_exec:.2f}s")

@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-df = pd.read_csv("./data/remotive_validado.csv")
+df = pd.read_csv("./data/remotive_erros_detectados.csv")
 
 st.title("Validador Inteligente de Vagas")
 
