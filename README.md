@@ -15,10 +15,10 @@ Este projeto tem como objetivo construir um validador automatizado de descriçõ
 
 ##  Tecnologias Utilizadas
 
-- Python 3.10+
+- Python 3.12+
 - Streamlit
 - Pandas
-- LLaMA / Ollama (ou outro modelo LLM local)
+- LLM Gemma 3
 - HTML Parser (BeautifulSoup)
 - API Remotive (https://remotive.com/api/remote-jobs)
 
@@ -56,9 +56,9 @@ Este projeto tem como objetivo construir um validador automatizado de descriçõ
 
 ##  Exemplo de Output da LLM
 
-> "1. **Erro de formatação**: uso excessivo de negrito.  
+> 1. **Erro de formatação**: uso excessivo de negrito.  
 > 2. **Tom excessivamente formal**: linguagem distante do candidato.  
-> 3. **Ausência de chamada para ação**: não convida o usuário a aplicar."
+> 3. **Ausência de chamada para ação**: não convida o usuário a aplicar.
 
 ---
 
