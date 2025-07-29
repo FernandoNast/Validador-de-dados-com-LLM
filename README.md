@@ -53,6 +53,10 @@ Este projeto tem como objetivo construir um validador automatizado de descriçõ
 -  **Dashboard Streamlit**: visualização e inspeção manual de validações.
 
 ---
+## Acesso ao APP Streamlit
+- Você cosnegue acessar ao aplicativo no Stremilit no link https://llmnast.streamlit.app/
+
+---
 
 ##  Exemplo de Output da LLM
 
