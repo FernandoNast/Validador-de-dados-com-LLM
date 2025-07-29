@@ -1,64 +1,49 @@
-# import requests
+import pandas as pd
+import requests
+import time
 
-# print("ativando o assistente")
+# Carrega seu CSV validado
+df = pd.read_csv("./data/remotive_validado.csv")
 
-# def perguntar(questao):
-#     url = "http://localhost:11434/api/chat"
-#     data = {
-#         "model":"gemma3",
-#         "messages":[
-#             {"role":"user","content":questao}
-#         ],
-#         "stream":False
-#     }
+df_top = df[df["pontuacao"] >= 5].sort_values(by="pontuacao", ascending=False).head(10)
 
-#     return requests.post(url,json=data) # da primeira abordagem
+# Função para analisar descrição com LLaMA
+def detectar_erros(texto):
+    prompt = f"""
+    Você é um validador de qualidade textual para descrições de vagas. Analise o seguinte texto e aponte **no máximo 3 erros** de linguagem, formatação, coerência ou estrutura. 
+    Responda apenas com os erros encontrados, se houver. 
+    Se estiver tudo certo, diga 'Sem erros detectados', do contrário, termine sua análise com a frase "essa foi a analise".
+    Responda com **textos em portugues**.
 
-# while True:
-#     pergunta = input("Voce: ")
-#     if pergunta.lower() == "sair":
-#         break
-    
-#     resposta = perguntar(pergunta)
+    Texto:
+    \"\"\"{texto}\"\"\"
+    """
 
-#     print(resposta.json()['model'] + ":",resposta.json()['message']['content'])
-
-# print("Desligando")
-
-#--------------------------------------------------------------------
-#--------------------------------------------------------------------
-#--------------------------------------------------------------------
-#--------------------------------------------------------------------
-from ollama import Client
-
-client = Client(host='http://localhost:11434')
-model = "gemma3"
-
-print("ativando o assistente")
-
-def perguntar(questao):
-    stream = client.chat(
-        model=model,
-        stream=True,
-        messages=[
-            {'role':'user','content':questao}
-        ]
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={
+            "model": "gemma3",
+            "prompt": prompt,
+            "stream": False
+        }
     )
-    return stream
+    # print("Resposta da API:", response.json())  # debug
+    return response.json().get("response", "").strip()
 
-# while True:
-#     perguntando = input("Voce: ")
-#     if perguntando.lower() == "sair":
-#         break
-#     resposta = perguntar(perguntando)
-#     print(model + ": ",end="")
 
-stream = client.chat(
-        model=model,
-        stream=True,
-        messages=[
-            {'role':'user','content':"Como voce esta?"}
-        ]
-    )
-for chunk in stream:
-    print(chunk['message']['content'],end='',flush=True)
+inicio = time.time()
+# print(detectar_erros(df["description"].iloc[0]))
+# Aplica ao primeiro exemplo do dataset (ou pode iterar)
+# fim = time.time()
+# tempo_exec = fim - inicio
+# print(f"\nExecução levou {tempo_exec:.2f}s")
+
+df_top["erros_textuais"] = df_top["description"].apply(detectar_erros)
+
+# Salva resultado
+df_top.to_csv("./data/remotive_erros_detectados.csv", index=False)
+
+print("Análise concluída! Resultados salvos em 'remotive_erros_detectados.csv'")
+fim = time.time()
+tempo_exec = fim - inicio
+print(f"\nExecução levou {tempo_exec:.2f}s")
